@@ -26,11 +26,12 @@
                 android:fontFamily="sans-serif"
                 />
             <ImageView
+                android:id="@+id/profile"
                 android:padding="25dp"
                 android:layout_weight="0.2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/search"
+                android:src="@drawable/person"
                 />
 
         </LinearLayout>
