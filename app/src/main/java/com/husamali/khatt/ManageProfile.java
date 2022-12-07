@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
@@ -26,7 +27,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.snapshot.Node;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class ManageProfile extends AppCompatActivity {
     byte[] bytes;
     Bitmap bitmap;
     Uri dpp;
+    FirebaseAuth firebaseAuth;
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -61,6 +64,7 @@ public class ManageProfile extends AppCompatActivity {
         setContentView(R.layout.activity_manage_profile);
         name = findViewById(R.id.nameManage);
         dp = findViewById(R.id.dpManage);
+        firebaseAuth = FirebaseAuth.getInstance();
         save = findViewById(R.id.save);
         dp.setOnClickListener(view -> {
             Intent i = new Intent();
@@ -81,7 +85,7 @@ public class ManageProfile extends AppCompatActivity {
                 }
                 StringRequest request=new StringRequest(
                         Request.Method.POST,
-                        "http://192.168.0.109/assignment_3/insert.php",
+                        "http://192.168.0.109/project/update.php",
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -120,12 +124,13 @@ public class ManageProfile extends AppCompatActivity {
                             }
                         })
                 {
+//                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Nullable
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params=new HashMap<>();
                         params.put("name",name.getText().toString());
-//                        params.put("phone_number",number.getText().toString());
+                        params.put("id",firebaseAuth.getCurrentUser().getUid());
                         params.put("dp", Base64.getEncoder().encodeToString(bytes));
                         return params;
                     }
